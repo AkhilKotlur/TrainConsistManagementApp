@@ -1,29 +1,31 @@
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-public class TrainConsistApp {
+public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
 
-        Set<String> trainFormation = new LinkedHashSet<>();
+        // Initializing HashMap: Key is Bogie Name (String), Value is Capacity (Integer)
+        Map<String, Integer> bogieCapacityMap = new HashMap<>();
 
-        System.out.println("Attaching bogies to the engine...");
-        trainFormation.add("Engine");
-        trainFormation.add("Sleeper");
-        trainFormation.add("Cargo");
-        trainFormation.add("Guard");
+        // Using put() to associate bogies with their specific capacities
+        bogieCapacityMap.put("Sleeper", 72);
+        bogieCapacityMap.put("AC Chair", 56);
+        bogieCapacityMap.put("First Class", 24);
+        bogieCapacityMap.put("Cargo", 1000); // 1000kg/1 ton limit
 
-        System.out.println("Current Formation: " + trainFormation);
+        System.out.println("Bogie Capacity Mapping initialized.\n");
 
-        System.out.println("\nAttempting to re-attach duplicate bogie: Sleeper...");
-        boolean isAdded = trainFormation.add("Sleeper");
+        // Iterating through the map using entrySet() to display both Key and Value
+        System.out.println("--- Consist Capacity Manifest ---");
+        for (Map.Entry<String, Integer> entry : bogieCapacityMap.entrySet()) {
+            System.out.println("Bogie Type: " + entry.getKey() + " | Capacity: " + entry.getValue());
+        }
 
-        System.out.println("Was duplicate added? " + isAdded);
-
-        System.out.println("\nFinal Verified Train Formation (Ordered & Unique):");
-        System.out.println(trainFormation);
-
-        System.out.println("Total Unique Bogies in Sequence: " + trainFormation.size());
+        // Demonstrating fast lookup
+        String searchBogie = "AC Chair";
+        System.out.println("\nSearching capacity for: " + searchBogie);
+        System.out.println("Capacity: " + bogieCapacityMap.get(searchBogie) + " seats.");
     }
 }
