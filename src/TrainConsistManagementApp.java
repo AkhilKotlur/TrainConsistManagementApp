@@ -1,32 +1,29 @@
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-public class TrainConsistManagementApp {
+public class TrainConsistApp {
 
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
 
-        LinkedList<String> trainConsist = new LinkedList<>();
+        Set<String> trainFormation = new LinkedHashSet<>();
 
-        trainConsist.add("Sleeper");
-        trainConsist.add("AC Chair");
-        trainConsist.add("Cargo");
+        System.out.println("Attaching bogies to the engine...");
+        trainFormation.add("Engine");
+        trainFormation.add("Sleeper");
+        trainFormation.add("Cargo");
+        trainFormation.add("Guard");
 
-        System.out.println("Initial Train: " + trainConsist);
+        System.out.println("Current Formation: " + trainFormation);
 
-        System.out.println("\nAdding Engine at the front and Guard Coach at the end...");
-        trainConsist.addFirst("Engine");
-        trainConsist.addLast("Guard Coach");
+        System.out.println("\nAttempting to re-attach duplicate bogie: Sleeper...");
+        boolean isAdded = trainFormation.add("Sleeper");
 
-        System.out.println("Inserting Pantry Car at position 2...");
-        trainConsist.add(2, "Pantry Car");
+        System.out.println("Was duplicate added? " + isAdded);
 
-        System.out.println("Current Sequence: " + trainConsist);
+        System.out.println("\nFinal Verified Train Formation (Ordered & Unique):");
+        System.out.println(trainFormation);
 
-        System.out.println("\nDetaching Engine and Guard Coach for maintenance...");
-        trainConsist.removeFirst();
-        trainConsist.removeLast();
-
-        System.out.println("Final Ordered Consist: " + trainConsist);
-        System.out.println("Final Bogie Count: " + trainConsist.size());
+        System.out.println("Total Unique Bogies in Sequence: " + trainFormation.size());
     }
 }
