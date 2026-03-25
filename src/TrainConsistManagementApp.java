@@ -1,31 +1,39 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+class Bogie {
+    String name;
+    int capacity;
+
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Bogie: %-12s | Capacity: %d seats", name, capacity);
+    }
+}
 
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
 
-        // Initializing HashMap: Key is Bogie Name (String), Value is Capacity (Integer)
-        Map<String, Integer> bogieCapacityMap = new HashMap<>();
+        List<Bogie> passengerBogies = new ArrayList<>();
+        passengerBogies.add(new Bogie("Sleeper", 72));
+        passengerBogies.add(new Bogie("AC Chair", 56));
+        passengerBogies.add(new Bogie("First Class", 24));
 
-        // Using put() to associate bogies with their specific capacities
-        bogieCapacityMap.put("Sleeper", 72);
-        bogieCapacityMap.put("AC Chair", 56);
-        bogieCapacityMap.put("First Class", 24);
-        bogieCapacityMap.put("Cargo", 1000); // 1000kg/1 ton limit
+        System.out.println("Initial Bogie List (Unsorted):");
+        passengerBogies.forEach(System.out::println);
 
-        System.out.println("Bogie Capacity Mapping initialized.\n");
+        // Sorting using Comparator (Descending order: High capacity to Low)
+        passengerBogies.sort(Comparator.comparingInt((Bogie b) -> b.capacity).reversed());
 
-        // Iterating through the map using entrySet() to display both Key and Value
-        System.out.println("--- Consist Capacity Manifest ---");
-        for (Map.Entry<String, Integer> entry : bogieCapacityMap.entrySet()) {
-            System.out.println("Bogie Type: " + entry.getKey() + " | Capacity: " + entry.getValue());
-        }
-
-        // Demonstrating fast lookup
-        String searchBogie = "AC Chair";
-        System.out.println("\nSearching capacity for: " + searchBogie);
-        System.out.println("Capacity: " + bogieCapacityMap.get(searchBogie) + " seats.");
+        System.out.println("\nSorted Bogie List (Highest Capacity First):");
+        passengerBogies.forEach(System.out::println);
     }
 }
