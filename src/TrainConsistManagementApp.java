@@ -1,49 +1,57 @@
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-class TrainConsistManagementAppTest {
+public class TrainConsistManagementApp {
 
-    @Test
-    void testSafety_AllBogiesValid() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistManagementApp.GoodsBogie("Box", "Grain")
-        );
-        assertTrue(TrainConsistManagementApp.validateSafety(bogies));
+    public static class Bogie {
+        String type;
+        int capacity;
+
+        public Bogie(String type, int capacity) {
+            this.type = type;
+            this.capacity = capacity;
+        }
     }
 
-    @Test
-    void testSafety_CylindricalWithInvalidCargo() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Coal")
-        );
-        assertFalse(TrainConsistManagementApp.validateSafety(bogies));
+    public static void main(String[] args) {
+        System.out.println("==========================================================");
+        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
+        System.out.println("==========================================================\n");
+
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            bogies.add(new Bogie("Type" + i, (int) (Math.random() * 100)));
+        }
+
+        long startLoop = System.nanoTime();
+        List<Bogie> loopFiltered = filterWithLoop(bogies);
+        long endLoop = System.nanoTime();
+        long loopDuration = endLoop - startLoop;
+
+        long startStream = System.nanoTime();
+        List<Bogie> streamFiltered = filterWithStream(bogies);
+        long endStream = System.nanoTime();
+        long streamDuration = endStream - startStream;
+
+        System.out.println("Loop Execution Time (ns): " + loopDuration);
+        System.out.println("Stream Execution Time (ns): " + streamDuration);
+        System.out.println("\nUC13 performance benchmarking completed...");
     }
 
-    @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Open", "Coal"),
-                new TrainConsistManagementApp.GoodsBogie("Box", "Grain")
-        );
-        assertTrue(TrainConsistManagementApp.validateSafety(bogies));
+    public static List<Bogie> filterWithLoop(List<Bogie> bogies) {
+        List<Bogie> filtered = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.capacity > 60) {
+                filtered.add(b);
+            }
+        }
+        return filtered;
     }
 
-    @Test
-    void testSafety_MixedBogiesWithViolation() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistManagementApp.GoodsBogie("Open", "Coal"),
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Grain")
-        );
-        assertFalse(TrainConsistManagementApp.validateSafety(bogies));
-    }
-
-    @Test
-    void testSafety_EmptyBogieList() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
-        assertTrue(TrainConsistManagementApp.validateSafety(bogies));
+    public static List<Bogie> filterWithStream(List<Bogie> bogies) {
+        return bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
     }
 }
