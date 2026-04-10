@@ -1,45 +1,51 @@
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TrainConsistManagementApp {
+public class TrainConsistManagementAppTest {
 
-    public static class Coach {
-        String type;
-        int seatCount;
-
-        public Coach(String type, int seatCount) {
-            this.type = type;
-            this.seatCount = seatCount;
-        }
-
-        public int getSeatCount() { return seatCount; }
-        public String getType() { return type; }
-
-        @Override
-        public String toString() {
-            return String.format("%s -> %d", type, seatCount);
-        }
+    @Test
+    void testRegex_ValidTrainID() {
+        assertTrue(TrainConsistManagementApp.isValidTrainID("TRN-6524"));
     }
 
-    public static int calculateTotalSeats(List<Coach> inventory) {
-        return inventory.stream()
-                .map(Coach::getSeatCount) // Extract capacity
-                .reduce(0, Integer::sum);  // Aggregate into total
+    @Test
+    void testRegex_InvalidTrainIDFormat() {
+        assertFalse(TrainConsistManagementApp.isValidTrainID("TRAIN-1234"));
+        assertFalse(TrainConsistManagementApp.isValidTrainID("TRN1234"));
     }
 
-    public static void main(String[] args) {
-        List<Coach> inventory = new ArrayList<>();
-        inventory.add(new Coach("Sleeper", 72));
-        inventory.add(new Coach("AC Chair", 56));
-        inventory.add(new Coach("First Class", 24));
-        inventory.add(new Coach("Sleeper", 70));
+    @Test
+    void testRegex_ValidCargoCode() {
+        assertTrue(TrainConsistManagementApp.isValidCargoCode("PET-FH"));
+    }
 
-        System.out.println("Coaches in Train:");
-        inventory.forEach(System.out::println);
+    @Test
+    void testRegex_InvalidCargoCodeFormat() {
+        assertFalse(TrainConsistManagementApp.isValidCargoCode("PET-abc"));
+        assertFalse(TrainConsistManagementApp.isValidCargoCode("CARGO-AB"));
+    }
 
-        int totalSeats = calculateTotalSeats(inventory);
+    @Test
+    void testRegex_TrainIDDigitLengthValidation() {
+        assertFalse(TrainConsistManagementApp.isValidTrainID("TRN-123"));
+        assertFalse(TrainConsistManagementApp.isValidTrainID("TRN-12345"));
+    }
 
-        System.out.println("\nTotal Seating Capacity of Train: " + totalSeats);
-        System.out.println("\nUC10 aggregation completed...");
+    @Test
+    void testRegex_CargoCodeUppercaseValidation() {
+        assertFalse(TrainConsistManagementApp.isValidCargoCode("pet-AB"));
+        assertFalse(TrainConsistManagementApp.isValidCargoCode("PET-aB"));
+    }
+
+    @Test
+    void testRegex_EmptyInputHandling() {
+        assertFalse(TrainConsistManagementApp.isValidTrainID(""));
+        assertFalse(TrainConsistManagementApp.isValidCargoCode(""));
+    }
+
+    @Test
+    void testRegex_ExactPatternMatch() {
+        assertFalse(TrainConsistManagementApp.isValidTrainID(" TRN-1234 "));
+        assertFalse(TrainConsistManagementApp.isValidCargoCode("PET-ABC"));
     }
 }
