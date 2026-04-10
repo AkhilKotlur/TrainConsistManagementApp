@@ -1,173 +1,45 @@
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TrainConsistManagementAppTest {
+public class TrainConsistManagementApp {
 
-    @Test
-    void testGrouping_BogiesGroupedByType() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("Sleeper", 70)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertTrue(result.containsKey("Sleeper"));
-        assertEquals(2, result.get("Sleeper").size());
+    public static class Coach {
+        String type;
+        int seatCount;
+
+        public Coach(String type, int seatCount) {
+            this.type = type;
+            this.seatCount = seatCount;
+        }
+
+        public int getSeatCount() { return seatCount; }
+        public String getType() { return type; }
+
+        @Override
+        public String toString() {
+            return String.format("%s -> %d", type, seatCount);
+        }
     }
 
-    @Test
-    void testGrouping_MultipleBogiesInSameGroup() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("AC Chair", 56),
-                new TrainConsistManagementApp.Coach("AC Chair", 60)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(2, result.get("AC Chair").size());
+    public static int calculateTotalSeats(List<Coach> inventory) {
+        return inventory.stream()
+                .map(Coach::getSeatCount) // Extract capacity
+                .reduce(0, Integer::sum);  // Aggregate into total
     }
 
-    @Test
-    void testGrouping_DifferentBogieTypes() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("AC Chair", 56)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(2, result.size());
-        assertTrue(result.containsKey("Sleeper") && result.containsKey("AC Chair"));
-    }
+    public static void main(String[] args) {
+        List<Coach> inventory = new ArrayList<>();
+        inventory.add(new Coach("Sleeper", 72));
+        inventory.add(new Coach("AC Chair", 56));
+        inventory.add(new Coach("First Class", 24));
+        inventory.add(new Coach("Sleeper", 70));
 
-    @Test
-    void testGrouping_EmptyBogieList() {
-        List<TrainConsistManagementApp.Coach> inventory = new ArrayList<>();
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertTrue(result.isEmpty());
-    }
+        System.out.println("Coaches in Train:");
+        inventory.forEach(System.out::println);
 
-    @Test
-    void testGrouping_SingleBogieCategory() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("General", 90)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(1, result.size());
-        assertTrue(result.containsKey("General"));
-    }
+        int totalSeats = calculateTotalSeats(inventory);
 
-    @Test
-    void testGrouping_MapContainsCorrectKeys() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("AC Chair", 56),
-                new TrainConsistManagementApp.Coach("First Class", 24)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertTrue(result.keySet().containsAll(Arrays.asList("Sleeper", "AC Chair", "First Class")));
-    }
-
-    @Test
-    void testGrouping_GroupSizeValidation() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("Sleeper", 70),
-                new TrainConsistManagementApp.Coach("AC Chair", 56)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(2, result.get("Sleeper").size());
-        assertEquals(1, result.get("AC Chair").size());
-    }
-
-    @Test
-    void testGrouping_OriginalListUnchanged() {
-        List<TrainConsistManagementApp.Coach> inventory = new ArrayList<>(Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72)
-        ));
-        TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(1, inventory.size());
-    }
-}import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-        import java.util.*;
-
-public class TrainConsistManagementAppTest {
-
-    @Test
-    void testGrouping_BogiesGroupedByType() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("Sleeper", 70)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertTrue(result.containsKey("Sleeper"));
-        assertEquals(2, result.get("Sleeper").size());
-    }
-
-    @Test
-    void testGrouping_MultipleBogiesInSameGroup() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("AC Chair", 56),
-                new TrainConsistManagementApp.Coach("AC Chair", 60)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(2, result.get("AC Chair").size());
-    }
-
-    @Test
-    void testGrouping_DifferentBogieTypes() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("AC Chair", 56)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(2, result.size());
-        assertTrue(result.containsKey("Sleeper") && result.containsKey("AC Chair"));
-    }
-
-    @Test
-    void testGrouping_EmptyBogieList() {
-        List<TrainConsistManagementApp.Coach> inventory = new ArrayList<>();
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testGrouping_SingleBogieCategory() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("General", 90)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(1, result.size());
-        assertTrue(result.containsKey("General"));
-    }
-
-    @Test
-    void testGrouping_MapContainsCorrectKeys() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("AC Chair", 56),
-                new TrainConsistManagementApp.Coach("First Class", 24)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertTrue(result.keySet().containsAll(Arrays.asList("Sleeper", "AC Chair", "First Class")));
-    }
-
-    @Test
-    void testGrouping_GroupSizeValidation() {
-        List<TrainConsistManagementApp.Coach> inventory = Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72),
-                new TrainConsistManagementApp.Coach("Sleeper", 70),
-                new TrainConsistManagementApp.Coach("AC Chair", 56)
-        );
-        Map<String, List<TrainConsistManagementApp.Coach>> result = TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(2, result.get("Sleeper").size());
-        assertEquals(1, result.get("AC Chair").size());
-    }
-
-    @Test
-    void testGrouping_OriginalListUnchanged() {
-        List<TrainConsistManagementApp.Coach> inventory = new ArrayList<>(Arrays.asList(
-                new TrainConsistManagementApp.Coach("Sleeper", 72)
-        ));
-        TrainConsistManagementApp.groupByType(inventory);
-        assertEquals(1, inventory.size());
+        System.out.println("\nTotal Seating Capacity of Train: " + totalSeats);
+        System.out.println("\nUC10 aggregation completed...");
     }
 }
