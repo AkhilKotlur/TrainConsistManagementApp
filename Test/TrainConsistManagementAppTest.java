@@ -1,54 +1,57 @@
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+/**
+ * ==========================================================
+ * MAIN CLASS - TrainConsistManagementApp
+ * ==========================================================
+ * * Use Case 16: Sort Passenger Bogies by Capacity
+ * * Description:
+ * This class demonstrates manual sorting of passenger
+ * bogie capacities using the Bubble Sort algorithm
+ * instead of built-in sorting utilities.
+ */
+public class TrainConsistManagementApp {
 
-class TrainConsistManagementAppTest {
+    public static void main(String[] args) {
+        System.out.println("==========================================================");
+        System.out.println(" UC16 - Manual Sorting using Bubble Sort ");
+        System.out.println("==========================================================\n");
 
-    @Test
-    void testCargo_SafeAssignment() {
-        TrainConsistManagementApp.GoodsBogie bogie = new TrainConsistManagementApp.GoodsBogie("Cylindrical");
-        bogie.assignCargo("Petroleum");
-        assertEquals("Petroleum", bogie.cargo);
+        // Create array of passenger bogie capacities
+        int[] capacities = {72, 56, 24, 70, 60};
+
+        // Display original order
+        System.out.println("Original Capacities:");
+        displayArray(capacities);
+
+        // ---- BUBBLE SORT LOGIC ----
+        bubbleSort(capacities);
+
+        // Display sorted result
+        System.out.println("\nSorted Capacities (Ascending):");
+        displayArray(capacities);
+
+        System.out.println("\nUC16 sorting completed...");
     }
 
-    @Test
-    void testCargo_UnsafeAssignmentHandled() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        TrainConsistManagementApp.GoodsBogie bogie = new TrainConsistManagementApp.GoodsBogie("Rectangular");
-        bogie.assignCargo("Petroleum");
-
-        assertTrue(outContent.toString().contains("Error: Unsafe cargo assignment!"));
+    public static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        // Outer loop controls number of passes
+        for (int i = 0; i < n - 1; i++) {
+            // Inner loop compares adjacent values
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    // Swap values when required
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
     }
 
-    @Test
-    void testCargo_CargoNotAssignedAfterFailure() {
-        TrainConsistManagementApp.GoodsBogie bogie = new TrainConsistManagementApp.GoodsBogie("Rectangular");
-        bogie.assignCargo("Petroleum");
-        assertNull(bogie.cargo);
-    }
-
-    @Test
-    void testCargo_ProgramContinuesAfterException() {
-        TrainConsistManagementApp.GoodsBogie bogie1 = new TrainConsistManagementApp.GoodsBogie("Rectangular");
-        TrainConsistManagementApp.GoodsBogie bogie2 = new TrainConsistManagementApp.GoodsBogie("Cylindrical");
-
-        bogie1.assignCargo("Petroleum"); // Throws/Catches
-        bogie2.assignCargo("Grain");     // Continues
-
-        assertEquals("Grain", bogie2.cargo);
-    }
-
-    @Test
-    void testCargo_FinallyBlockExecution() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        TrainConsistManagementApp.GoodsBogie bogie = new TrainConsistManagementApp.GoodsBogie("Rectangular");
-        bogie.assignCargo("Petroleum");
-
-        assertTrue(outContent.toString().contains("Cargo validation completed"));
+    private static void displayArray(int[] arr) {
+        for (int c : arr) {
+            System.out.print(c + " ");
+        }
+        System.out.println();
     }
 }
