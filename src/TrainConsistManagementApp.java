@@ -1,39 +1,47 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-class Bogie {
-    String name;
-    int capacity;
-
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Bogie: %-12s | Capacity: %d seats", name, capacity);
-    }
-}
+import java.util.stream.Collectors;
 
 public class TrainConsistManagementApp {
 
+    public static class Coach {
+        String type;
+        int seatCount;
+
+        public Coach(String type, int seatCount) {
+            this.type = type;
+            this.seatCount = seatCount;
+        }
+
+        public int getSeatCount() {
+            return seatCount;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s -> %d", type, seatCount);
+        }
+    }
+
+    public static List<Coach> filterHighCapacity(List<Coach> inventory, int threshold) {
+        return inventory.stream()
+                .filter(c -> c.getSeatCount() > threshold)
+                .collect(Collectors.toList());
+    }
+
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
+        List<Coach> inventory = new ArrayList<>();
+        inventory.add(new Coach("Sleeper", 72));
+        inventory.add(new Coach("AC Chair", 56));
+        inventory.add(new Coach("First Class", 24));
+        inventory.add(new Coach("General", 90));
 
-        List<Bogie> passengerBogies = new ArrayList<>();
-        passengerBogies.add(new Bogie("Sleeper", 72));
-        passengerBogies.add(new Bogie("AC Chair", 56));
-        passengerBogies.add(new Bogie("First Class", 24));
+        System.out.println("Full Inventory:");
+        inventory.forEach(System.out::println);
 
-        System.out.println("Initial Bogie List (Unsorted):");
-        passengerBogies.forEach(System.out::println);
+        List<Coach> results = filterHighCapacity(inventory, 60);
 
-        // Sorting using Comparator (Descending order: High capacity to Low)
-        passengerBogies.sort(Comparator.comparingInt((Bogie b) -> b.capacity).reversed());
-
-        System.out.println("\nSorted Bogie List (Highest Capacity First):");
-        passengerBogies.forEach(System.out::println);
+        System.out.println("\nFiltered Results (> 60):");
+        results.forEach(System.out::println);
     }
 }
