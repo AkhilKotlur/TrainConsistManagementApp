@@ -1,49 +1,51 @@
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
 
 class TrainConsistManagementAppTest {
 
     @Test
-    void testSafety_AllBogiesValid() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistManagementApp.GoodsBogie("Box", "Grain")
-        );
-        assertTrue(TrainConsistManagementApp.validateSafety(bogies));
+    void testException_ValidCapacityCreation() throws TrainConsistManagementApp.InvalidCapacityException {
+        TrainConsistManagementApp.PassengerBogie bogie = new TrainConsistManagementApp.PassengerBogie("Sleeper", 72);
+        assertNotNull(bogie);
+        assertEquals(72, bogie.capacity);
     }
 
     @Test
-    void testSafety_CylindricalWithInvalidCargo() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Coal")
-        );
-        assertFalse(TrainConsistManagementApp.validateSafety(bogies));
+    void testException_NegativeCapacityThrowsException() {
+        Exception exception = assertThrows(TrainConsistManagementApp.InvalidCapacityException.class, () -> {
+            new TrainConsistManagementApp.PassengerBogie("AC", -10);
+        });
+        assertEquals("Capacity must be greater than zero", exception.getMessage());
     }
 
     @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Open", "Coal"),
-                new TrainConsistManagementApp.GoodsBogie("Box", "Grain")
-        );
-        assertTrue(TrainConsistManagementApp.validateSafety(bogies));
+    void testException_ZeroCapacityThrowsException() {
+        assertThrows(TrainConsistManagementApp.InvalidCapacityException.class, () -> {
+            new TrainConsistManagementApp.PassengerBogie("General", 0);
+        });
     }
 
     @Test
-    void testSafety_MixedBogiesWithViolation() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistManagementApp.GoodsBogie("Open", "Coal"),
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Grain")
-        );
-        assertFalse(TrainConsistManagementApp.validateSafety(bogies));
+    void testException_ExceptionMessageValidation() {
+        try {
+            new TrainConsistManagementApp.PassengerBogie("Chair Car", 0);
+            fail("Expected InvalidCapacityException was not thrown");
+        } catch (TrainConsistManagementApp.InvalidCapacityException e) {
+            assertEquals("Capacity must be greater than zero", e.getMessage());
+        }
     }
 
     @Test
-    void testSafety_EmptyBogieList() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
-        assertTrue(TrainConsistManagementApp.validateSafety(bogies));
+    void testException_ObjectIntegrityAfterCreation() throws TrainConsistManagementApp.InvalidCapacityException {
+        TrainConsistManagementApp.PassengerBogie bogie = new TrainConsistManagementApp.PassengerBogie("First Class", 24);
+        assertEquals("First Class", bogie.type);
+        assertEquals(24, bogie.capacity);
+    }
+
+    @Test
+    void testException_MultipleValidBogiesCreation() throws TrainConsistManagementApp.InvalidCapacityException {
+        TrainConsistManagementApp.PassengerBogie b1 = new TrainConsistManagementApp.PassengerBogie("TypeA", 10);
+        TrainConsistManagementApp.PassengerBogie b2 = new TrainConsistManagementApp.PassengerBogie("TypeB", 20);
+        assertNotSame(b1, b2);
     }
 }
