@@ -1,57 +1,45 @@
-/**
- * ==========================================================
- * MAIN CLASS - TrainConsistManagementApp
- * ==========================================================
- * * Use Case 16: Sort Passenger Bogies by Capacity
- * * Description:
- * This class demonstrates manual sorting of passenger
- * bogie capacities using the Bubble Sort algorithm
- * instead of built-in sorting utilities.
- */
-public class TrainConsistManagementApp {
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
-    public static void main(String[] args) {
-        System.out.println("==========================================================");
-        System.out.println(" UC16 - Manual Sorting using Bubble Sort ");
-        System.out.println("==========================================================\n");
+class TrainConsistManagementAppTest {
 
-        // Create array of passenger bogie capacities
-        int[] capacities = {72, 56, 24, 70, 60};
-
-        // Display original order
-        System.out.println("Original Capacities:");
-        displayArray(capacities);
-
-        // ---- BUBBLE SORT LOGIC ----
-        bubbleSort(capacities);
-
-        // Display sorted result
-        System.out.println("\nSorted Capacities (Ascending):");
-        displayArray(capacities);
-
-        System.out.println("\nUC16 sorting completed...");
+    @Test
+    void testSort_BasicAlphabeticalSorting() {
+        String[] types = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        TrainConsistManagementApp.sortBogieTypes(types);
+        String[] expected = {"AC Chair", "First Class", "General", "Luxury", "Sleeper"};
+        assertArrayEquals(expected, types);
     }
 
-    public static void bubbleSort(int[] arr) {
-        int n = arr.length;
-        // Outer loop controls number of passes
-        for (int i = 0; i < n - 1; i++) {
-            // Inner loop compares adjacent values
-            for (int j = 0; j < n - i - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    // Swap values when required
-                    int temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
+    @Test
+    void testSort_UnsortedInput() {
+        String[] types = {"Luxury", "General", "Sleeper", "AC Chair"};
+        TrainConsistManagementApp.sortBogieTypes(types);
+        String[] expected = {"AC Chair", "General", "Luxury", "Sleeper"};
+        assertArrayEquals(expected, types);
     }
 
-    private static void displayArray(int[] arr) {
-        for (int c : arr) {
-            System.out.print(c + " ");
-        }
-        System.out.println();
+    @Test
+    void testSort_AlreadySortedArray() {
+        String[] types = {"AC Chair", "First Class", "General"};
+        TrainConsistManagementApp.sortBogieTypes(types);
+        String[] expected = {"AC Chair", "First Class", "General"};
+        assertArrayEquals(expected, types);
+    }
+
+    @Test
+    void testSort_DuplicateBogieNames() {
+        String[] types = {"Sleeper", "AC Chair", "Sleeper", "General"};
+        TrainConsistManagementApp.sortBogieTypes(types);
+        String[] expected = {"AC Chair", "General", "Sleeper", "Sleeper"};
+        assertArrayEquals(expected, types);
+    }
+
+    @Test
+    void testSort_SingleElementArray() {
+        String[] types = {"Sleeper"};
+        TrainConsistManagementApp.sortBogieTypes(types);
+        String[] expected = {"Sleeper"};
+        assertArrayEquals(expected, types);
     }
 }
